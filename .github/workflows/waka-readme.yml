@@ -8,15 +8,25 @@ jobs:
   update-readme:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Actualizar README con WakaTime Stats
+      - name: Clonar waka-readme-stats
+        run: |
+          git clone https://github.com/anmol098/waka-readme-stats.git
+          cd waka-readme-stats
+
+      - name: Instalar dependencias
+        run: |
+          cd waka-readme-stats
+          pip install -r requirements.txt
+
+      - name: Ejecutar script para generar waka.svg
         run: |
           cd waka-readme-stats
           python main.py
+
       - name: Commit cambios
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add README.md
+          git add waka-readme-stats/waka.svg README.md
           git commit -m 'Actualizar README con estadísticas de WakaTime'
           git push
