@@ -1,0 +1,36 @@
+name: Update WakaTime Heatmap
+
+on:
+  schedule:
+    - cron: "0 4 * * 1"  # todos los lunes
+  workflow_dispatch:
+
+jobs:
+  update-heatmap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repo
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+
+      - name: Instalar dependencias
+        run: pip install svgwrite requests
+
+      - name: Generar heatmap
+        env:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+        run: python generate_waka_heatmap.py
+
+      - name: Hacer commit y push
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add waka-heatmap.svg
+          git commit -m "Update WakaTime heatmap" || echo "Sin cambios"
+          git push https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }} HEAD:main
