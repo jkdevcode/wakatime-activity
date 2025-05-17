@@ -1,2 +1,3 @@
 ## 📊 WakaTime Stats
-![WakaTime Stats](https://github.com/jkdevcode/wakatime-activity/waka-readme-stats/waka.svg)
+![WakaTime Stats](https://raw.githubusercontent.com/jkdevcode/wakatime-activity/main/waka.svg)
+
