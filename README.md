@@ -1,1 +1,1 @@
-![WakaTime Stats](https://github.com/jkdevcode/wakatime-activity/waka-readme-stats/waka.svg)
+![WakaTime Stats](https://github.com/jkdevcode/wakatime-activity/waka-heatmap.svg)
