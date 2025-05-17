@@ -21,7 +21,9 @@ jobs:
       - name: Ejecutar script para generar waka.svg
         run: |
           cd waka-readme-stats
+          ls  # Para verificar que el archivo main.py está presente
           python main.py
+
 
       - name: Commit cambios
         run: |
