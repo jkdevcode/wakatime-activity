@@ -1,34 +1,16 @@
-name: WakaTime Readme Stats
+name: Waka Readme
+
 on:
   schedule:
-    - cron: '0 * * * *'  # Se ejecuta cada hora
+    # Runs at 12am IST
+    - cron: '30 18 * * *'
   workflow_dispatch:
-
 jobs:
   update-readme:
+    name: Update Readme with Metrics
     runs-on: ubuntu-latest
     steps:
-      - name: Clonar waka-readme-stats
-        run: |
-          git clone https://github.com/anmol098/waka-readme-stats.git
-          cd waka-readme-stats
-
-      - name: Instalar dependencias
-        run: |
-          cd waka-readme-stats
-          pip install -r requirements.txt
-
-      - name: Ejecutar script para generar waka.svg
-        run: |
-          cd waka-readme-stats
-          ls  # Para verificar que el archivo main.py está presente
-          python main.py
-
-
-      - name: Commit cambios
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add waka-readme-stats/waka.svg README.md
-          git commit -m 'Actualizar README con estadísticas de WakaTime'
-          git push
+      - uses: anmol098/waka-readme-stats@master
+        with:
+          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
