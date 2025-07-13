@@ -18,28 +18,28 @@ colors = [
 
 def get_data():
     end = datetime.now(timezone.utc).date()
-    start = end - timedelta(days=7)  # ✅ Solo últimos 7 días para cuentas free
+    start = end - timedelta(days=30)  # ✅ Últimos 30 días
 
     api_url = f"https://wakatime.com/api/v1/users/{USERNAME}/summaries?start={start}&end={end}"
     headers = {"Authorization": f"Basic {API_KEY}"}
-    
+
     res = requests.get(api_url, headers=headers)
-    print("Respuesta de la API:", res.text)
     if res.status_code != 200:
         raise Exception(f"Error al obtener datos: {res.status_code}")
-    
+
     summaries = res.json()["data"]
     data = []
+
     for day in summaries:
         data.append({
-            "date": day["range"]["date"],
+            "date": day["range"]["date"],  # ✅ Corregido según respuesta real
             "grand_total": {
                 "total_seconds": day.get("grand_total", {}).get("total_seconds", 0)
             }
         })
-    
-    # Debug: últimos 7 días
-    for d in data:
+
+    # Debug: muestra los últimos días
+    for d in data[-7:]:
         print(d["date"], d["grand_total"]["total_seconds"])
 
     return data
