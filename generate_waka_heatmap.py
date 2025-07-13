@@ -51,15 +51,19 @@ def get_data():
     return data
 
 def intensity(duration):
-    if duration == 0:
-        return 0
-    elif duration < 600:
-        return 1
-    elif duration < 1800:
-        return 2
-    elif duration < 3600:
-        return 3
-    return 4
+    horas = duration / 3600
+    if horas < 1:
+        return 0  # Negro azulado oscuro
+    elif 1 <= horas < 4:
+        return 1  # Azul oscuro
+    elif 4 <= horas < 9:
+        return 2  # Azul grisáceo oscuro
+    elif 9 <= horas < 11:
+        return 3  # Azul medio
+    elif 11 <= horas < 13:
+        return 4  # Azul claro
+    else:
+        return 5  # Gris muy claro
 
 def draw_svg(data, filename="waka-heatmap.svg"):
     square_size = 12
@@ -74,9 +78,24 @@ def draw_svg(data, filename="waka-heatmap.svg"):
         y = date.weekday() * (square_size + padding)
         total_seconds = day.get("grand_total", {}).get("total_seconds", 0)
         level = intensity(total_seconds)
-        dwg.add(dwg.rect(insert=(x, y), size=(square_size, square_size), fill=colors[level]))
+
+        # Calcular horas y minutos
+        hours = int(total_seconds // 3600)
+        minutes = int((total_seconds % 3600) // 60)
+
+        # Formato de texto hover
+        label = f"{date.strftime('%b %d, %Y')} — {hours}h {minutes}m"
+
+        rect = dwg.rect(
+            insert=(x, y),
+            size=(square_size, square_size),
+            fill=colors[level]
+        )
+        rect.set_desc(title=label)  # 👈 Tooltip visible al pasar mouse
+        dwg.add(rect)
 
     dwg.save()
+
 
 if __name__ == "__main__":
     data = get_data()
