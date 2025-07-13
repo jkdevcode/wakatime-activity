@@ -21,7 +21,7 @@ colors = [
 
 def get_data():
     end = datetime.now(timezone.utc).date()
-    start = end - timedelta(days=7)  # ✅ Solo últimos 7 días para cuentas free
+    start = end - timedelta(days=30)  # ✅ Solo últimos 7 días para cuentas free
 
     api_url = f"https://wakatime.com/api/v1/users/{USERNAME}/summaries?start={start}&end={end}"
     # Codifica la API Key en base64, agregando ":" al final
