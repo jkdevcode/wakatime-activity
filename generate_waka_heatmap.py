@@ -1,6 +1,7 @@
 import requests
 import svgwrite
 import os
+import base64
 from datetime import datetime, timedelta, timezone
 
 # Configuración
@@ -9,37 +10,42 @@ USERNAME = os.getenv("WAKATIME_USERNAME", "current")
 
 # Paleta de colores tipo GitHub
 colors = [
-    "#161b22",  # Sin actividad
-    "#0e4429",
-    "#006d32",
-    "#26a641",
-    "#39d353",
+  "#1C1F26",  # Negro azulado oscuro
+  "#2B3A4C",  # Azul oscuro
+  "#3C526A",  # Azul grisáceo oscuro
+  "#56728D",  # Azul medio
+  "#7C9AB9",  # Azul claro
+  "#D3D7DC"   # Gris muy claro
 ]
+
 
 def get_data():
     end = datetime.now(timezone.utc).date()
-    start = end - timedelta(days=30)  # ✅ Últimos 30 días
+    start = end - timedelta(days=7)  # ✅ Solo últimos 7 días para cuentas free
 
     api_url = f"https://wakatime.com/api/v1/users/{USERNAME}/summaries?start={start}&end={end}"
-    headers = {"Authorization": f"Basic {API_KEY}"}
-
+    # Codifica la API Key en base64, agregando ":" al final
+    auth_string = f"{API_KEY}:"
+    b64_auth = base64.b64encode(auth_string.encode()).decode()
+    headers = {"Authorization": f"Basic {b64_auth}"}
+    
     res = requests.get(api_url, headers=headers)
+    print("Respuesta de la API:", res.text)
     if res.status_code != 200:
         raise Exception(f"Error al obtener datos: {res.status_code}")
-
+    
     summaries = res.json()["data"]
     data = []
-
     for day in summaries:
         data.append({
-            "date": day["range"]["date"],  # ✅ Corregido según respuesta real
+            "date": day["range"]["date"],
             "grand_total": {
                 "total_seconds": day.get("grand_total", {}).get("total_seconds", 0)
             }
         })
-
-    # Debug: muestra los últimos días
-    for d in data[-7:]:
+    
+    # Debug: últimos 7 días
+    for d in data:
         print(d["date"], d["grand_total"]["total_seconds"])
 
     return data
