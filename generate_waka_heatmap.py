@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta, timezone
 
 # Configuración
-API_KEY = os.getenv("WAKATIME_API_KEY") or "waka_41c3522d-b3b3-43ad-b61c-6a8fbc1bc160"
+API_KEY = os.getenv("WAKATIME_API_KEY") or "waka_d201f5f5-9f59-4cc2-be43-5372a96aa232"
 USERNAME = os.getenv("WAKATIME_USERNAME", "current")
 
 # Paleta de colores tipo GitHub
