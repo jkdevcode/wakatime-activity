@@ -18,7 +18,7 @@ colors = [
 ]
 
 def get_data():
-    headers = {"Authorization": f"Bearer {API_KEY}"}
+    headers = {"Authorization": f"Basic {API_KEY}"}
     res = requests.get(API_URL, headers=headers)
     if res.status_code != 200:
         raise Exception(f"Error al obtener datos: {res.status_code}")
