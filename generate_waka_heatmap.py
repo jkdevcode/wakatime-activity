@@ -49,10 +49,12 @@ def draw_svg(data, filename="waka-heatmap.svg"):
         date = datetime.datetime.strptime(day["date"], "%Y-%m-%d")
         x = week * (square_size + padding)
         y = date.weekday() * (square_size + padding)
-        level = intensity(day["total_seconds"])
+        total_seconds = day.get("grand_total", {}).get("total_seconds", 0)
+        level = intensity(total_seconds)
         dwg.add(dwg.rect(insert=(x, y), size=(square_size, square_size), fill=colors[level]))
         if date.weekday() == 6:
             week += 1
+
 
     dwg.save()
 
