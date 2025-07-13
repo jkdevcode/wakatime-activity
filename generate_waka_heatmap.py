@@ -74,8 +74,12 @@ def draw_svg(data, filename="waka-heatmap.svg"):
 
     for i, day in enumerate(data):
         date = datetime.strptime(day["date"], "%Y-%m-%d")
-        x = i * (square_size + padding)
-        y = date.weekday() * (square_size + padding)
+        week_start = datetime.strptime(data[0]["date"], "%Y-%m-%d")
+        days_since_start = (date - week_start).days
+
+        x = (days_since_start // 7) * (square_size + padding)  # columna semanal
+        y = (date.weekday()) * (square_size + padding)         # fila diaria
+
         total_seconds = day.get("grand_total", {}).get("total_seconds", 0)
         level = intensity(total_seconds)
 
