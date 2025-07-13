@@ -1,1 +1,2 @@
-![WakaTime Heatmap](https://raw.githubusercontent.com/jkdevcode/wakatime-activity/main/waka-heatmap.svg)
+![WakaTime Activity](https://github.com/jkdevcode/wakatime-activity/raw/main/waka-heatmap.svg)
+
