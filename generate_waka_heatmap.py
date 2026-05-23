@@ -26,7 +26,7 @@ API_KEY = os.getenv("WAKATIME_API_KEY")
 USERNAME = os.getenv("WAKATIME_USERNAME", "current")
 THEMES = {
     "light": {
-        "background": "#FFFFFF",
+        "background": None,
         "text": "#0F172A",
         "legend_text": "#0F172A",
         "stroke": "#D7DEE8",
@@ -40,7 +40,7 @@ THEMES = {
         ],
     },
     "dark": {
-        "background": "#0B1220",
+        "background": None,
         "text": "#8AA4C8",
         "legend_text": "#F2F7FF",
         "stroke": "#132033",
@@ -156,7 +156,8 @@ def draw_svg(data, filename="waka-heatmap.svg", theme_name="light"):
     chart_x = left_margin
     chart_y = top_margin
 
-    dwg.add(dwg.rect(insert=(0, 0), size=(width, height), fill=theme["background"]))
+    if theme["background"]:
+        dwg.add(dwg.rect(insert=(0, 0), size=(width, height), fill=theme["background"]))
 
     font_family = "Segoe UI, Arial, sans-serif"
     month_style = {
