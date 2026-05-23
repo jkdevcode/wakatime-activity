@@ -56,7 +56,6 @@ The workflow automatically:
 ## Notes
 
 - The generator uses WakaTime `GET /users/{id}/insights/days?range=last_year`.
-- Availability of historical data may depend on your WakaTime plan and account data retention.
 - The workflow only needs `WAKATIME_API_KEY` because the script defaults to `current` when `WAKATIME_USERNAME` is not provided.
 - Generated files are committed directly to `main`; this repo does not use a separate `output` branch.
 
