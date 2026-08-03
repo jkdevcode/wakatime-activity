@@ -74,7 +74,7 @@ def get_data():
     user_id = user_res.json()["data"]["id"]
     
     # /insights/days devuelve el heatmap anual que usa el perfil.
-    api_url = f"https://wakatime.com/api/v1/users/{user_id}/insights/days?range=last_year"
+    api_url = f"https://wakatime.com/api/v1/users/{user_id}/insights/days/last_year"
     
     res = requests.get(api_url, headers=headers, timeout=15)
     print("Respuesta de la API:", res.text[:200])
