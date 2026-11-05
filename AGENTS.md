@@ -6,7 +6,7 @@
 
 ## Run And Verify
 - There is no `requirements.txt` or `pyproject.toml`; local setup matches CI: `pip install requests svgwrite`.
-- Required env: `WAKATIME_API_KEY`. Optional env: `WAKATIME_USERNAME` defaults to `current`.
+- Required env: `WAKATIME_ACCESS_TOKEN` (a WakaTime OAuth access token, not an API key). Optional env: `WAKATIME_USERNAME` defaults to `current`.
 - Repo-native verification is minimal: `python -m py_compile generate_waka_heatmap.py`, then run `python generate_waka_heatmap.py` with the env vars set and inspect both regenerated SVGs.
 - The script prints the raw API response and per-day totals to stdout. Noisy logs are expected and are not by themselves a failure.
 
