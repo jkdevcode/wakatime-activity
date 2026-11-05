@@ -1,8 +1,7 @@
 import requests
 import svgwrite
 import os
-import base64
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 # Cargar un archivo .env simple si existe (sin dependencia externa)
 def load_dotenv(dotenv_path=".env"):
@@ -22,7 +21,7 @@ def load_dotenv(dotenv_path=".env"):
 load_dotenv()
 
 # Configuración
-API_KEY = os.getenv("WAKATIME_API_KEY")
+ACCESS_TOKEN = os.getenv("WAKATIME_ACCESS_TOKEN")
 USERNAME = os.getenv("WAKATIME_USERNAME", "current")
 THEMES = {
     "light": {
@@ -57,39 +56,40 @@ THEMES = {
 
 
 def get_headers():
-    if not API_KEY:
-        raise Exception("WAKATIME_API_KEY no está configurado")
+    if not ACCESS_TOKEN:
+        raise Exception(
+            "WAKATIME_ACCESS_TOKEN no está configurado; usa un token OAuth "
+            "personal de WakaTime, no una API key"
+        )
 
-    auth_string = f"{API_KEY}:"
-    b64_auth = base64.b64encode(auth_string.encode()).decode()
-    return {"Authorization": f"Basic {b64_auth}"}
+    return {"Authorization": f"Bearer {ACCESS_TOKEN}"}
 
 
 def get_data():
     headers = get_headers()
-    
-    user_res = requests.get(f"https://wakatime.com/api/v1/users/{USERNAME}", headers=headers, timeout=15)
-    if user_res.status_code != 200:
-        raise Exception(f"Error al obtener usuario: {user_res.status_code}")
-    user_id = user_res.json()["data"]["id"]
-    
-    # /insights/days devuelve el heatmap anual que usa el perfil.
-    api_url = f"https://wakatime.com/api/v1/users/{user_id}/insights/days/last_year"
-    
-    res = requests.get(api_url, headers=headers, timeout=15)
-    print("Respuesta de la API:", res.text[:200])
+
+    end = datetime.now(timezone.utc).date()
+    start = end - timedelta(days=365)
+    api_url = (
+        f"https://wakatime.com/api/v1/users/{USERNAME}/summaries"
+        f"?start={start}&end={end}"
+    )
+    res = requests.get(api_url, headers=headers, timeout=90)
     if res.status_code != 200:
-        raise Exception(f"Error al obtener datos: {res.status_code}")
-    
-    payload = res.json()["data"]
-    insights = payload.get("days", [])
-    if not insights:
-        raise Exception("La API no devolvió días para el heatmap")
+        raise Exception(
+            f"Error al obtener datos: {res.status_code}. "
+            f"Respuesta de WakaTime: {res.text[:500]}"
+        )
 
     totals_by_date = {}
-    for day in insights:
-        current_date = datetime.strptime(day["date"], "%Y-%m-%d").date()
-        totals_by_date[current_date] = float(day.get("total") or 0)
+    for day in res.json()["data"]:
+        current_date = datetime.strptime(day["range"]["date"], "%Y-%m-%d").date()
+        totals_by_date[current_date] = float(
+            day.get("grand_total", {}).get("total_seconds") or 0
+        )
+
+    if not totals_by_date:
+        raise Exception("La API no devolvió resúmenes diarios para el heatmap")
 
     first_date = min(totals_by_date)
     last_date = max(totals_by_date)
@@ -109,7 +109,7 @@ def get_data():
         })
         current_date += timedelta(days=1)
 
-    print("Rango API:", payload.get("human_readable_range"), first_date, last_date)
+    print("Rango API:", first_date, last_date)
     
     # Debug: días con datos
     for d in data:

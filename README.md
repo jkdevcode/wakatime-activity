@@ -39,14 +39,14 @@ Turn your WakaTime stats into a profile-style activity heatmap.
 
 ## How It Works
 
-This project fetches your WakaTime daily data from `GET /users/{id}/insights/days?range=last_year` and renders two SVG files:
+This project fetches your WakaTime daily data from `GET /users/{username}/summaries?start=...&end=...` for the last 365 days and renders two SVG files:
 
 - `waka-heatmap.svg`
 - `waka-heatmap-dark.svg`
 
 The workflow automatically:
 
-- loads your `WAKATIME_API_KEY` from GitHub Secrets
+- loads your `WAKATIME_ACCESS_TOKEN` from GitHub Secrets
 - fetches the last year of WakaTime daily activity
 - generates light and dark SVG heatmaps
 - commits the updated SVG files back to `main`
@@ -55,9 +55,9 @@ The workflow automatically:
 
 ## Notes
 
-- The generator uses WakaTime `GET /users/{id}/insights/days?range=last_year`.
-- No paid WakaTime plan is required.
-- The workflow only needs `WAKATIME_API_KEY` because the script defaults to `current` when `WAKATIME_USERNAME` is not provided.
+- The generator uses WakaTime `GET /users/{username}/summaries` for a 365-day date range. Access to this range depends on WakaTime API permissions and account limits.
+- WakaTime API keys are write-only. The workflow needs a personal OAuth access token in the `WAKATIME_ACCESS_TOKEN` GitHub Secret because the script reads your activity.
+- The script defaults to `current` when `WAKATIME_USERNAME` is not provided.
 - Generated files are committed directly to `main`; this repo does not use a separate `output` branch.
 
 ---
@@ -65,7 +65,7 @@ The workflow automatically:
 ## Setup
 
 1. Fork this repository.
-2. Add a repository secret named `WAKATIME_API_KEY`.
+2. Create a personal OAuth access token from your WakaTime account and add it as a repository secret named `WAKATIME_ACCESS_TOKEN`.
 3. Optionally set `WAKATIME_USERNAME` locally if you do not want to use `current`.
 4. Enable GitHub Actions.
 5. Run the `Update WakaTime Heatmap` workflow manually once, or wait for the daily schedule.
@@ -92,7 +92,7 @@ python generate_waka_heatmap.py
 You can also copy `.env.example` to `.env` and set:
 
 ```env
-WAKATIME_API_KEY=your_api_key_here
+WAKATIME_ACCESS_TOKEN=your_personal_oauth_token_here
 WAKATIME_USERNAME=current
 ```
 

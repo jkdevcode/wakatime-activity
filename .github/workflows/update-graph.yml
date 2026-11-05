@@ -22,7 +22,7 @@ jobs:
 
       - name: Generar heatmap
         env:
-          WAKATIME_API_KEY: ${{ secrets.WAKATIME_API_KEY }}
+          WAKATIME_ACCESS_TOKEN: ${{ secrets.WAKATIME_ACCESS_TOKEN }}
         run: python generate_waka_heatmap.py
 
       - name: Hacer commit y push
@@ -34,4 +34,3 @@ jobs:
           git push origin HEAD:main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
